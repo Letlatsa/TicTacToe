@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import './App.css';
+import Board from './components/Board.tsx';
+import Status from './components/Status.tsx';
+import ResetButton from './components/ResetButton.tsx';
 
 function App() {
   const [squares, setSquares] = useState(Array(9).fill(""));
   const [currentPlayer, setCurrentPlayer] = useState("X");
-  const [winner, setWinner] = useState(null);
+  const [winner, setWinner] = useState<string | null>(null);
 
   const swapPlayer = () => {
     setCurrentPlayer((prevPlayer) => (prevPlayer === "X" ? "O" : "X"));
   };
 
-  const handleSquareClick = (index) => {
+  const handleSquareClick = (index: number) => {
     if (squares[index] === "" && !winner) {
       const newSquares = [...squares];
       newSquares[index] = currentPlayer;
@@ -21,7 +24,7 @@ function App() {
     }
   };
 
-  const checkWinner = (squares) => {
+  const checkWinner = (squares: string[]) => {
     const winningCombinations = [
       [0, 1, 2], [3, 4, 5], [6, 7, 8],
       [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -46,25 +49,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1><div className={`winner-message ${winner ? 'winner-visible' : ''}`}>
-        Player {winner} wins!
-      </div></h1>
-
-      <h2>Current Player: {currentPlayer}</h2>
-      
-      <div className="board">
-        {squares.map((square, index) => (
-          <button
-            onClick={() => handleSquareClick(index)}
-            className="square"
-            key={index}
-          >
-            {square}
-          </button>
-        ))}
-      </div>
-      
-      <button onClick={resetGame} className="reset-button">Reset Game</button>
+      <Status currentPlayer={currentPlayer} winner={winner} />
+      <Board squares={squares} onSquareClick={handleSquareClick} />
+      <ResetButton onReset={resetGame} />
     </div>
   );
 }
